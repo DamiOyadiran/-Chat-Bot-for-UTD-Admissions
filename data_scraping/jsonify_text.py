@@ -4,7 +4,7 @@ directory = '../results'
 
 json_cont = { "input": "output" }
 
-with open("unstructured_data_v2.json", "a") as outfile:
+with open("unstructured_data_v3.jsonl", "a") as outfile:
     for filename in os.listdir(directory):
         file = open(os.path.join(directory, filename), 'r')
         file_cont = file.read()
@@ -21,3 +21,4 @@ with open("unstructured_data_v2.json", "a") as outfile:
 
             json_object = json.dumps(json_cont, indent=1)
             outfile.write(json_object)
+            outfile.write('\n')
