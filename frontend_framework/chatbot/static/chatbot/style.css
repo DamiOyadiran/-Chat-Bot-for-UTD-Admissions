@@ -1,3 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 #app {
   width: 100vw;
   height: 100vh;
@@ -8,11 +14,9 @@
 }
 
 /* chat container */
-
 #chat_container {
   height: 100%;
   width: 100%;
-  overflow-y: scroll;
   padding: 10px;
   background-color: #f5f5f5;
   border: 1px solid #ccc;
@@ -22,10 +26,11 @@
 .message {
   margin: 10px;
   padding: 10px;
+  min-height: 40px;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.1);
-  
+  height: fit-content;
 }
 
 /* bot message */
@@ -39,17 +44,16 @@ textarea {
   height: 40px;
   padding: 10px;
   border: 1px solid #ccc;
-  resize: none;
   border-radius: 5px;
   font-size: 16px;
   margin-right: 10px;
   width: 100%;
+  outline: none;
 }
 
 /* form */
 form {
   width: 100%;
-  max-width: 1280px;
   margin: 0 auto;
   padding: 10px;
   background: transparent;
@@ -57,6 +61,7 @@ form {
   flex-direction: row;
 }
 
+/* submit button */
 button {
   outline: 0;
   border: 0;
