@@ -42,6 +42,9 @@ const handleSubmit = async (e) => {
 
   const data = new FormData(form);
 
+  // Resize textarea to its original size
+  form.querySelector("textarea").style.height = "auto";
+
   // user
   chatcontainer.innerHTML += messageView(false, data.get("prompt"));
 
@@ -57,6 +60,12 @@ const handleSubmit = async (e) => {
 
   messageLoader(messageDiv);
 };
+
+// adjust textarea based on content length
+function textAreaAdjust(e) {
+  e.style.height = "1px";
+  e.style.height = 5 + e.scrollHeight + "px";
+}
 
 // user press submit button
 form.addEventListener("submit", handleSubmit);
