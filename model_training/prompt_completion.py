@@ -4,6 +4,7 @@ def format(input):
     # Stuff done that we'll figure out to maximalize its accuracy for the model
     model_completion_prompt = input + " ->"
     context = ''
+    
     output = model_completion(model_completion_prompt)
     return output
 
