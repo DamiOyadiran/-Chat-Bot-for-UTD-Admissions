@@ -58,9 +58,11 @@ const handleSubmit = async (e) => {
   messageLoader(messageDiv);
 };
 
+// user press submit button
 form.addEventListener("submit", handleSubmit);
+// user press 'enter' on the keyboard
 form.addEventListener("keyup", (e) => {
-  if (e.keycode === 13) {
+  if (e.code === "Enter") {
     handleSubmit(e);
   }
 });
