@@ -4,8 +4,6 @@ directory = '../results'
 
 json_cont = { "input": "output" }, {"input2": "output2"}, {"input2": "output2"}
 
-print(type(json_cont))
-
 
 for filename in os.listdir(directory):
     file = open(os.path.join(directory, filename), 'r')
