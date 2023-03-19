@@ -25,14 +25,25 @@ function generateMessageId() {
 
 function messageView(isAi, value, uid) {
   return `
-        <div class="wrapper" ${isAi && "ai"}">
+        <div class="wrapper ${isAi && "ai"}">
             <div class="chat">
-               
+              <div class="message-container">
+               <div class="profile-picture">
+                <img 
+                  src="${
+                    isAi
+                      ? "static/chatbot/assets/Temoc.jpg"
+                      : "static/chatbot/assets/user.png"
+                  }"
+                />
+                </div>
                 <div class="message" id=${uid}>
                     ${value}
-                </div>
-            </div>
-        </div>
+                    </div> 
+                  </div>  
+                </div> 
+            </div>  
+        </div>  
         `;
 }
 

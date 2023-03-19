@@ -22,6 +22,11 @@
   border: 1px solid #ccc;
 }
 
+.message-container {
+  display: flex;
+  align-items: center;
+}
+
 /* chat messages */
 .message {
   margin: 10px;
@@ -35,7 +40,17 @@
 
 /* bot message */
 .wrapper.ai .message {
-  background-color: #dcf8c6;
+  background-color: #f0f0f0;
+  min-width: 2em;
+}
+
+.profile-picture {
+  margin-top: 5px;
+  margin-right: 10px;
+}
+
+.profile-picture img {
+  display: inline;
 }
 
 /* text area */
@@ -86,4 +101,10 @@ button:active {
   height: auto;
   max-width: 24px;
   max-height: 24px;
+}
+
+img {
+  border-radius: 50%;
+  max-width: 40px;
+  max-height: 40px;
 }
