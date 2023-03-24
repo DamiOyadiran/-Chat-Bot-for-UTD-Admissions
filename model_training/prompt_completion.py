@@ -1,4 +1,4 @@
-import openai
+import openai, embedded_context
 
 max_context = 6
 context_array = []
@@ -13,7 +13,7 @@ def format(input):
 
     create_question()
 
-    model_completion_prompt = input + " ->"
+    model_completion_prompt = embedded_context.find_context(input) + "\n\n" + input
     context = ''
     
     output = model_completion(model_completion_prompt)
@@ -41,11 +41,6 @@ def create_question():
 
     openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=[
-                {"role": "system", "content": "You are are a ."},
-                {"role": "user", "content": "Who won the world series in 2020?"},
-                {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
-                {"role": "user", "content": "Where was it played?"}
-            ]
+        messages=messages
     )
     return ''
