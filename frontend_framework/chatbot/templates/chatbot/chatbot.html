@@ -15,11 +15,12 @@
     <div id="app">
         <div id="chat_container"></div>
         <form>
-            <textarea name="prompt" rows="1" cols="1" placeholder="Ask chatbot..."></textarea>
-            <button type="submit">Send</button>
+            <textarea name="prompt" rows="1" cols="1" placeholder="Ask chatbot..." onkeyup="textAreaAdjust(this)"></textarea>
+            <button type="submit"><img id="send-message" src="{% static 'chatbot/assets/send-message.svg' %}"></button>
         </form>
     </div>
     <script src="{% static 'chatbot/script.js' %}"></script>
 </body>
 
 </html>
+

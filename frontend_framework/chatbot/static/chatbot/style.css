@@ -1,3 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 #app {
   width: 100vw;
   height: 100vh;
@@ -8,48 +14,62 @@
 }
 
 /* chat container */
-
 #chat_container {
   height: 100%;
   width: 100%;
-  overflow-y: scroll;
   padding: 10px;
   background-color: #f5f5f5;
   border: 1px solid #ccc;
+}
+
+.message-container {
+  display: flex;
+  align-items: center;
 }
 
 /* chat messages */
 .message {
   margin: 10px;
   padding: 10px;
+  min-height: 40px;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.1);
-  
+  height: fit-content;
 }
 
 /* bot message */
 .wrapper.ai .message {
-  background-color: #dcf8c6;
+  background-color: #f0f0f0;
+  min-width: 2em;
+}
+
+.profile-picture {
+  margin-top: 5px;
+  margin-right: 10px;
+}
+
+.profile-picture img {
+  display: inline;
 }
 
 /* text area */
 textarea {
   flex: 1;
-  height: 40px;
+  min-height: 40px;
+  resize: none;
   padding: 10px;
   border: 1px solid #ccc;
-  resize: none;
   border-radius: 5px;
   font-size: 16px;
   margin-right: 10px;
   width: 100%;
+  outline: none;
 }
 
 /* form */
 form {
   width: 100%;
-  max-width: 1280px;
   margin: 0 auto;
   padding: 10px;
   background: transparent;
@@ -57,9 +77,34 @@ form {
   flex-direction: row;
 }
 
+/* submit button */
 button {
+  width: fit-content;
   outline: 0;
   border: 0;
   cursor: pointer;
   background: transparent;
+}
+
+button:hover {
+  background-color: #f2f2f2;
+  border-radius: 5px;
+  box-shadow: 0px 0px 20px -18px;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+#send-message {
+  width: auto;
+  height: auto;
+  max-width: 24px;
+  max-height: 24px;
+}
+
+img {
+  border-radius: 50%;
+  max-width: 40px;
+  max-height: 40px;
 }

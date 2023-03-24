@@ -25,14 +25,25 @@ function generateMessageId() {
 
 function messageView(isAi, value, uid) {
   return `
-        <div class="wrapper" ${isAi && "ai"}">
+        <div class="wrapper ${isAi && "ai"}">
             <div class="chat">
-               
+              <div class="message-container">
+               <div class="profile-picture">
+                <img 
+                  src="${
+                    isAi
+                      ? "static/chatbot/assets/Temoc.jpg"
+                      : "static/chatbot/assets/user.png"
+                  }"
+                />
+                </div>
                 <div class="message" id=${uid}>
                     ${value}
-                </div>
-            </div>
-        </div>
+                    </div> 
+                  </div>  
+                </div> 
+            </div>  
+        </div>  
         `;
 }
 
@@ -41,6 +52,9 @@ const handleSubmit = async (e) => {
   e.preventDefault();
 
   const data = new FormData(form);
+
+  // Resize textarea to its original size
+  form.querySelector("textarea").style.height = "auto";
 
   // user
   chatcontainer.innerHTML += messageView(false, data.get("prompt"));
@@ -57,6 +71,12 @@ const handleSubmit = async (e) => {
 
   messageLoader(messageDiv);
 };
+
+// adjust textarea based on content length
+function textAreaAdjust(e) {
+  e.style.height = "1px";
+  e.style.height = 5 + e.scrollHeight + "px";
+}
 
 // user press submit button
 form.addEventListener("submit", handleSubmit);
