@@ -44,3 +44,12 @@ def create_question():
         messages=messages
     )
     return ''
+
+# Testing without util of front-end
+if __name__ == "__main__":
+    while (True):
+        user_prompt = input("Provide user input: ")
+        if (user_prompt == "exit"):
+            break
+
+        print(format(user_prompt))
