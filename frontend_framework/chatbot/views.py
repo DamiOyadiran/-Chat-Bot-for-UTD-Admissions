@@ -6,7 +6,6 @@ from random import choice
 import openai
 from django.views import View
 from model_training.prompt_completion import format
-from model_training.prompt_completion import ChatBot
 import json
 from django.views.decorators.csrf import csrf_exempt
 
@@ -18,8 +17,7 @@ def chatbot(request):
         print(f"data: {data}")
         prompt = data['prompt']
         print(f"prompt: {prompt}")
-        bot = ChatBot()
-        response = ChatBot.format(prompt)
+        response = format(prompt)
         print(f"response: {response}" )
         print("response slit: " +response.choices[0].text.strip())
         return JsonResponse({'output': response['choices'][0]['text']})
