@@ -5,8 +5,21 @@ from dotenv import load_dotenv
 from random import choice
 import openai
 from django.views import View
+from model_training.prompt_completion import format
+import json
+from django.views.decorators.csrf import csrf_exempt
 
-# Create your views here.
 
+@csrf_exempt
 def chatbot(request):
-    return render(request, 'chatbot/chatbot.html')
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        print(f"data: {data}")
+        prompt = data['prompt']
+        print(f"prompt: {prompt}")
+        response = format(prompt)
+        print(f"response: {response}" )
+        print("response slit: " +response.choices[0].text.strip())
+        return JsonResponse({'output': response['choices'][0]['text']})
+    else:
+        return render(request, 'chatbot/chatbot.html')

@@ -8,7 +8,7 @@ function messageLoader(element) {
   // make sure it's empty
   element.textContent = "";
 
-  // every
+  // every 300ms, add a dot to the elements's text content
   loadInterval = setInterval(() => {
     element.textContent += ".";
     // if loading indicator reach 3 dots reset
@@ -24,17 +24,22 @@ function generateMessageId() {
 }
 
 function messageView(isAi, value, uid) {
+
+  // if isAi is true, add the "ai" class to the wrapper div
+  const wrapperClass = isAi ? "wrapper ai" : "wrapper";
+
+  // if isAi is true, use Temoc.jpg as the profile picture, otherwise use user.png
+  const profilePictureSrc = isAi
+    ? "static/chatbot/assets/Temoc.jpg"
+    : "static/chatbot/assets/user.png";
+
   return `
-        <div class="wrapper ${isAi && "ai"}">
+        <div class="wrapper ${wrapperClass}">
             <div class="chat">
               <div class="message-container">
                <div class="profile-picture">
                 <img 
-                  src="${
-                    isAi
-                      ? "static/chatbot/assets/Temoc.jpg"
-                      : "static/chatbot/assets/user.png"
-                  }"
+                  src="${profilePictureSrc}"
                 />
                 </div>
                 <div class="message" id=${uid}>
@@ -48,7 +53,7 @@ function messageView(isAi, value, uid) {
 }
 
 const handleSubmit = async (e) => {
-  // dont reload page
+  // prevent page from reloading
   e.preventDefault();
 
   const data = new FormData(form);
@@ -56,12 +61,13 @@ const handleSubmit = async (e) => {
   // Resize textarea to its original size
   form.querySelector("textarea").style.height = "auto";
 
-  // user
-  chatcontainer.innerHTML += messageView(false, data.get("prompt"));
+  // add user's message to chat container
+  const userMessage = data.get("prompt");
+  chatcontainer.innerHTML += messageView(false, userMessage);
 
   form.reset();
 
-  // bot
+  // add blank message to chat container as placeholder for the chatbot's response
   const uid = generateMessageId();
   chatcontainer.innerHTML += messageView(true, " ", uid);
 
@@ -69,7 +75,24 @@ const handleSubmit = async (e) => {
 
   const messageDiv = document.getElementById(uid);
 
-  messageLoader(messageDiv);
+  // messageLoader(messageDiv);
+
+  // make a POST request to the server w/ user's message as the payload
+  const response = await fetch("/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      prompt: data.get("prompt"),
+    }),
+  });
+
+  // Get the response from the server as JSON
+  const responseData = await response.json();
+
+  // Replace the blank message in the chat container with the chatbot's response
+  messageDiv.innerHTML = responseData.output;
 };
 
 // adjust textarea based on content length
