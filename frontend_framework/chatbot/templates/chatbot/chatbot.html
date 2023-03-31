@@ -14,7 +14,7 @@
 <body>
     <div id="app">
         <div id="chat_container"></div>
-        <form>
+        <form method="POST" action="{% url 'chatbot' %}">
             <textarea name="prompt" rows="1" cols="1" placeholder="Ask chatbot..." onkeyup="textAreaAdjust(this)"></textarea>
             <button type="submit"><img id="send-message" src="{% static 'chatbot/assets/send-message.svg' %}"></button>
         </form>
