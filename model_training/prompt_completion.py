@@ -1,8 +1,19 @@
-import openai
+import openai, embedded_context
+
+max_context = 6
+context_array = []
 
 def format(input):
     # Stuff done that we'll figure out to maximalize its accuracy for the model
-    model_completion_prompt = input + " ->"
+
+    # Remove last question-answer pairing from the context
+    if (len(context_array) > max_context):
+        context_array = context_array[2:]
+    context_array[len(context_array)] = input
+
+    create_question()
+
+    model_completion_prompt = embedded_context.find_context(input) + "\n\n" + input
     context = ''
     
     output = model_completion(model_completion_prompt)
@@ -16,5 +27,29 @@ def model_completion(input):
         stop='\n'
     )
 
-def get_context(input):
+def create_question():
+    messages = [{"role": "system", "content": "You are a system made to create a question based off of the prior conversation."}]
+
+    i = 0
+    while (i < len(context_array) - 1):
+        messages[i] = {"role": "user", "content": context_array[i]}
+        messages[i+1] = {"role": "assistant", "content": context_array[i+1]}
+        i += 2
+
+    messages[i] = {"role": "user", "content": context_array[i]} # Newest message provided by the user
+    messages[i+1] = {"role": "user", "content": "Create a question based off the previous conversation we have had, or if there is only one previous question, turn it into a question if it is not already one."}
+
+    openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=messages
+    )
     return ''
+
+# Testing without util of front-end
+if __name__ == "__main__":
+    while (True):
+        user_prompt = input("Provide user input: ")
+        if (user_prompt == "exit"):
+            break
+
+        print(format(user_prompt))
