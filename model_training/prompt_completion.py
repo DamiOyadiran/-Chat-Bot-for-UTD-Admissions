@@ -15,7 +15,7 @@ def format(input):
 
    # model_completion_prompt = create_question()
 
-    top_context = embedded_context.find_context(input)
+    top_context = embedded_context.find_context(input)[:2]
 
     chosen_sections = []
     sects_len = 0

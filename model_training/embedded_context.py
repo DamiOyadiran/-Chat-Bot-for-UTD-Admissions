@@ -31,4 +31,4 @@ def order_documents_by_similarity(query, contexts):
 
 def find_context(query):
     context = order_documents_by_similarity(query, load_embeddings(os.path.join(os.path.dirname(__file__), embedding_file_name)))
-    return context[:4]
+    return context
