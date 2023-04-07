@@ -1,6 +1,6 @@
 import pandas as pd, os, openai, sys
 
-df= pd.read_csv(os.path.join(os.path.dirname(__file__), 'model_training/tabled_data_with_answers_2.csv'))
+df= pd.read_csv(os.path.join(os.path.dirname(__file__), 'formatted_data/data_set_with_answers.csv'))
 
 def get_questions(context):
     try:
@@ -63,4 +63,4 @@ if __name__ == "__main__":
 df2 = pd.DataFrame.from_dict(compute_doc_embeddings(df))
 df2 = pd.concat([df.filter(items=['topic', 'title']), df2.T], axis="columns")
     #print(df)
-df2.to_csv('./data_set_with_embed.csv')
+df2.to_csv('./formatted_data/data_set_with_embed.csv')
