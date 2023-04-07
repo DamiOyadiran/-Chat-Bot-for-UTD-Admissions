@@ -1,5 +1,5 @@
 from sklearn.model_selection import train_test_split
-import prompt_completion, pandas as pd, os, embedded_context, random
+import pandas as pd, os, embedded_context, random
 
 DF = pd.read_csv(os.path.join(os.path.dirname(__file__), 'tabled_data_with_answers_2.csv'))
 
@@ -20,7 +20,7 @@ def get_other_contexts(question, chosen_context):
 def create_tuning_set(df, discrim=False):
     rows = []
 
-    for row in df.iterrows():
+    for i, row in df.iterrows():
         for q, a in zip(("1." + row.questions).split('\n'), ("1." + row.answers).split('\n')):
             if discrim:
                 rows.append({"prompt":f"{row.context}\nQuestion: {q[2:].strip()}\n Related:", "completion":f" yes"})
@@ -38,7 +38,7 @@ def create_tuning_set(df, discrim=False):
                 elif j == 1:
                     random_context = get_other_contexts(q[2:].strip(), row.context)
                 else:
-                    while (True)
+                    while (True):
                         random_context = df.sample(1).iloc[0].context
                         if random_context != row.context:
                             break

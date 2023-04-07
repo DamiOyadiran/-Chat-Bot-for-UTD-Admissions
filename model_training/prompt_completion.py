@@ -5,6 +5,9 @@ SEPARATOR = "\n* "
 
 DF = pd.read_csv(os.path.join(os.path.dirname(__file__), 'tabled_data_with_answers_2.csv'))
 
+COMPLETION_MODEL = "ada:ft-cs-chatbot-t5-2023-04-07-05-26-20"
+DISCRIM_MODEL = "ada:ft-cs-chatbot-t5-2023-04-07-05-23-53"
+
 def format(input):
     # Stuff done that we'll figure out to maximalize its accuracy for the model
 
@@ -15,7 +18,7 @@ def format(input):
 
    # model_completion_prompt = create_question()
 
-    top_context = embedded_context.find_context(input)[:2]
+    top_context = embedded_context.find_context(input)[0]
 
     chosen_sections = []
     sects_len = 0
@@ -30,26 +33,22 @@ def format(input):
         chosen_sections.append(SEPARATOR + document_section[0][2].replace("\n", " "))
         sects_indices.append(str(section_index))
 
-    model_completion_prompt = """Answer the question as truthfully as possible using the provided context, and if the answer is not contained within the text below, say "I don't know." The answer should end in a complete sentence with a period.\n\nContext:\n"""
-    model_completion_prompt += "".join(chosen_sections) + "\n\n Q: " + input + "\n A:"
-    print(model_completion_prompt)
+    model_completion_prompt = """Context:\n"""
+    model_completion_prompt += "".join(chosen_sections) + "\n\n Question: " + input + "\n Answer: "
     
     output = model_completion(model_completion_prompt)
-    
-
     return output
 
 def model_completion(input):
     return openai.Completion.create(
-        model='ada',
+        model=COMPLETION_MODEL,
         prompt=input,
         echo=False,
         stop='\n',
-        max_tokens=50
+        max_tokens=100
     )
-#:ft-cs-chatbot-t5-2023-03-09-03-56-59
 
-def create_question():
+def create_question(context_array):
     messages = [{"role": "system", "content": "You are a system made to create a question based off of the prior conversation."}]
 
     i = 0
