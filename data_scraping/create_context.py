@@ -32,4 +32,4 @@ df = df.drop_duplicates(['topic','title'])
 
 df["context"] = df.title + "\n" + df.content
 
-df.to_csv('model_training/tabled_data.csv', index=False)
+df.to_csv('model_training/formatted_data/data_set_full.csv', index=False)
