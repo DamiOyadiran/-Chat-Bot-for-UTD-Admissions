@@ -1,6 +1,6 @@
 import pandas as pd, numpy as np, openai, os
 
-embedding_file_name = 'data_set_with_embed.csv'
+EMBEDDING_FILE = './formatted_data/data_set_with_embed_full.csv'
 
 def get_embedding(text: str, model: str="text-embedding-ada-002") -> list[float]:
     result = openai.Embedding.create(
@@ -30,5 +30,5 @@ def order_documents_by_similarity(query, contexts):
     return document_similarities
 
 def find_context(query):
-    context = order_documents_by_similarity(query, load_embeddings(os.path.join(os.path.dirname(__file__), embedding_file_name)))
+    context = order_documents_by_similarity(query, load_embeddings(os.path.join(os.path.dirname(__file__), EMBEDDING_FILE)))
     return context

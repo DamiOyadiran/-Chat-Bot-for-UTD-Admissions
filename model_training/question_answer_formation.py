@@ -43,9 +43,9 @@ def get_answers(row):
     
 def get_embedding(text: str, model: str="text-embedding-ada-002") -> list[float]:
     global num_embed_get
-    if (num_embed_get % 60 == 0):
+    if (num_embed_get != 0 and num_embed_get % 30 == 0):
         print(f'sleep {num_embed_get / 60 + 1} started')
-        time.sleep(60) # Getting around rate limiting :/
+        time.sleep(90) # Getting around rate limiting :/
         print(f'sleep {num_embed_get / 60 + 1} completed')
 
     result = openai.Embedding.create(

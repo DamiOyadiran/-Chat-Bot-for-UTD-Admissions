@@ -1,7 +1,9 @@
 from sklearn.model_selection import train_test_split
 import pandas as pd, os, embedded_context, random
+from math import isnan
 
-DF = pd.read_csv(os.path.join(os.path.dirname(__file__), 'tabled_data_with_answers_2.csv'))
+FILE = './formatted_data/data_set_with_answers_full.csv'
+DF = pd.read_csv(os.path.join(os.path.dirname(__file__), FILE))
 
 train_df, test_df = train_test_split(DF, test_size=0.2, random_state=42)
 
@@ -19,14 +21,14 @@ def get_other_contexts(question, chosen_context):
 
 def create_tuning_set(df, discrim=False):
     rows = []
-
+    df = df[df.questions > " "] # Removing bad rows from the dataframe (surprisingly simple!)
     for i, row in df.iterrows():
         for q, a in zip(("1." + row.questions).split('\n'), ("1." + row.answers).split('\n')):
             if discrim:
                 rows.append({"prompt":f"{row.context}\nQuestion: {q[2:].strip()}\n Related:", "completion":f" yes"})
             else:
                 rows.append({"prompt":f"{row.context}\nQuestion: {q[2:].strip()}\nAnswer:", "completion":f" {a[2:].strip()}"})
-
+# rate limits make me cry :(
         for q in ("1." + row.questions).split('\n'):
             for j in range(3):
                 random_context = ""
