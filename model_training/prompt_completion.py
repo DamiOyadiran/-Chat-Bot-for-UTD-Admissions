@@ -3,7 +3,7 @@ import openai, embedded_context, os, pandas as pd
 MAX_SEC_LEN = 1000
 SEPARATOR = "\n* "
 
-DF = pd.read_csv(os.path.join(os.path.dirname(__file__), 'formatted_data/data_set_with_answers.csv'))
+DF = pd.read_csv(os.path.join(os.path.dirname(__file__), 'formatted_data\\data_set_with_answers_full.csv'))
 
 COMPLETION_MODEL = "ada:ft-cs-chatbot-t5-2023-04-07-05-26-20"
 DISCRIM_MODEL = "ada:ft-cs-chatbot-t5-2023-04-07-05-23-53"
