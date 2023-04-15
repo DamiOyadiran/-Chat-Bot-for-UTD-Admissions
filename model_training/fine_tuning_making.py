@@ -1,6 +1,5 @@
 from sklearn.model_selection import train_test_split
-import pandas as pd, os, embedded_context, random
-from math import isnan
+import pandas as pd, os, embedded_context, random, time
 
 FILE = './formatted_data/data_set_with_answers_full.csv'
 DF = pd.read_csv(os.path.join(os.path.dirname(__file__), FILE))
@@ -20,6 +19,8 @@ def get_other_contexts(question, chosen_context):
         return random.choice(candidates)
 
 def create_tuning_set(df, discrim=False):
+    num_iterations = 0
+
     rows = []
     df = df[df.questions > " "] # Removing bad rows from the dataframe (surprisingly simple!)
     for i, row in df.iterrows():
@@ -38,7 +39,12 @@ def create_tuning_set(df, discrim=False):
                             continue
                     random_context = subset.sample(1).iloc[0].context
                 elif j == 1:
+                    if (num_iterations != 0 and num_iterations % 30 == 0):
+                        print(f'sleep {num_iterations / 30 + 1} started')
+                        time.sleep(90) # Getting around rate limiting :/
+                        print(f'sleep {num_iterations / 30 + 1} completed')
                     random_context = get_other_contexts(q[2:].strip(), row.context)
+                    num_iterations += 1
                 else:
                     while (True):
                         random_context = df.sample(1).iloc[0].context
