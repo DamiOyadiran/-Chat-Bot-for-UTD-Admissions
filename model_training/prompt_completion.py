@@ -5,8 +5,8 @@ SEPARATOR = "\n* "
 
 DF = pd.read_csv(os.path.join(os.path.dirname(__file__), 'formatted_data\\data_set_with_answers_full.csv'))
 
-COMPLETION_MODEL = "ada:ft-cs-chatbot-t5-2023-04-07-05-26-20"
-DISCRIM_MODEL = "ada:ft-cs-chatbot-t5-2023-04-07-05-23-53"
+COMPLETION_MODEL = "curie:ft-utd-senior-design-project-2023-04-15-03-22-09"
+DISCRIM_MODEL = "ada:ft-utd-senior-design-project-2023-04-15-03-04-13"
 
 def format(input):
     # Stuff done that we'll figure out to maximalize its accuracy for the model
