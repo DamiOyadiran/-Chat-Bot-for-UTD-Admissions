@@ -20,33 +20,54 @@ def format(input):
 
     top_context = embedded_context.find_context(input)[0]
 
-    chosen_sections = []
+    #chosen_sections = []
     sects_len = 0
     sects_indices = []
 
-    for _, section_index in top_context:
-        document_section = DF.loc[DF['title'] == section_index[1]].values
-        sects_len += document_section[0][3]
-        if sects_len > MAX_SEC_LEN:
-            break
+    document_section = DF.loc[DF['title'] == top_context[1][1]].values
 
-        chosen_sections.append(SEPARATOR + document_section[0][2].replace("\n", " "))
-        sects_indices.append(str(section_index))
+    #for _, section_index in top_context:
+    #    document_section = DF.loc[DF['title'] == section_index[1]].values
+    #    sects_len += document_section[0][3]
+    #    if sects_len > MAX_SEC_LEN:
+    #        break
 
-    model_completion_prompt = """Context:\n"""
-    model_completion_prompt += "".join(chosen_sections) + "\n\n Question: " + input + "\n Answer: "
+    #    chosen_sections.append(SEPARATOR + document_section[0][2].replace("\n", " "))
+    #    sects_indices.append(str(section_index))
+
+    model_completion_prompt = document_section[0][3].replace("\n", " ") + "\nQuestion: " + input + "\nAnswer: "
     
-    output = model_completion(model_completion_prompt)
-    return output
+    while (1):
+        if (check_discrim(model_completion_prompt)):
+            output = model_completion(model_completion_prompt)
+            if (output['choices'][0]["finish_reason"] == 'stop' and output['choices'][0]['text'].replace(" ", "") != ""):
+                print('owned')
+                break
+            return output
+        else:
+            return "No context found according to discrim."
 
 def model_completion(input):
     return openai.Completion.create(
         model=COMPLETION_MODEL,
         prompt=input,
         echo=False,
-        stop='\n',
-        max_tokens=100
+        max_tokens=200
     )
+
+def check_discrim(input):
+    logprobs = openai.Completion.create(
+        model=DISCRIM_MODEL,
+        prompt=input,
+        echo=False,
+        max_tokens=1,
+        logprobs = 10
+    )['choices'][0]['logprobs']['top_logprobs'][0]
+    print(logprobs)
+    yes = logprobs[' yes'] if ' yes' in logprobs else -100
+    no = logprobs[' no'] if ' no' in logprobs else -100
+    print (f' {yes} {no}')
+    return (yes > no)
 
 def create_question(context_array):
     messages = [{"role": "system", "content": "You are a system made to create a question based off of the prior conversation."}]
