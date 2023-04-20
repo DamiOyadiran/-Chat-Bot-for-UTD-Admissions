@@ -14,7 +14,7 @@ def chatbot(request):
         data = json.loads(request.body)
         prompt = data['prompt']
         response = format(prompt)
-        print("response: " +response.choices[0].text.strip())
-        return JsonResponse({'output': response['choices'][0]['text']})
+        print("response: " + response.strip())
+        return JsonResponse({'output': response})
     else:
         return render(request, 'chatbot/chatbot.html')

@@ -43,7 +43,7 @@ def format(input):
             if (output['choices'][0]["finish_reason"] == 'stop' and output['choices'][0]['text'].replace(" ", "") != ""):
                 print('owned')
                 break
-            return output
+            return output['choices'][0]['text']
         else:
             return "No context found according to discrim."
 
