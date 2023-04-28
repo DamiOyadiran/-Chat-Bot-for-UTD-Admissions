@@ -34,14 +34,15 @@ def format(input):
 
     #    chosen_sections.append(SEPARATOR + document_section[0][2].replace("\n", " "))
     #    sects_indices.append(str(section_index))
-
-    model_completion_prompt = document_section[0][3].replace("\n", " ") + "\nQuestion: " + input + "\nAnswer: "
+    #print(document_section[0][3])
+    header = """Provide a single answer. Do not repeat the question.\n\n"""
+    model_completion_prompt = document_section[0][5].replace("\n", " ") + "\nQuestion: " + input + "\n"
+    #model_completion_prompt = "Question: " + input + "\n"
     
     while (1):
-        if (check_discrim(model_completion_prompt)):
-            output = model_completion(model_completion_prompt)
+        if (check_discrim(model_completion_prompt + " Related:")):
+            output = model_completion(header + model_completion_prompt)
             if (output['choices'][0]["finish_reason"] == 'stop' and output['choices'][0]['text'].replace(" ", "") != ""):
-                print('owned')
                 break
             return output['choices'][0]['text']
         else:
@@ -50,19 +51,22 @@ def format(input):
 def model_completion(input):
     return openai.Completion.create(
         model=COMPLETION_MODEL,
-        prompt=input,
+        prompt=input + "Answer:",
         echo=False,
-        max_tokens=200
+        max_tokens=200,
+        stop=["Question", "\n\n"],
+        temperature = .7
     )
 
 def check_discrim(input):
-    logprobs = openai.Completion.create(
+    result = openai.Completion.create(
         model=DISCRIM_MODEL,
         prompt=input,
         echo=False,
         max_tokens=1,
         logprobs = 10
-    )['choices'][0]['logprobs']['top_logprobs'][0]
+    )
+    logprobs = result['choices'][0]['logprobs']['top_logprobs'][0]
     print(logprobs)
     yes = logprobs[' yes'] if ' yes' in logprobs else -100
     no = logprobs[' no'] if ' no' in logprobs else -100
