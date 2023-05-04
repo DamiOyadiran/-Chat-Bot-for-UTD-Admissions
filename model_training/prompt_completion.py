@@ -8,54 +8,48 @@ DF = pd.read_csv(os.path.join(os.path.dirname(__file__), 'formatted_data\\data_s
 COMPLETION_MODEL = "curie:ft-utd-senior-design-project-2023-04-15-03-22-09"
 DISCRIM_MODEL = "ada:ft-utd-senior-design-project-2023-04-15-03-04-13"
 
+SORRY_MESSAGE = "Sorry, this Chatbot isn't equipped to answer this question. Make sure your question is specifically defined and about financial aid at UT Dallas."
+
 def format(input):
-    # Stuff done that we'll figure out to maximalize its accuracy for the model
+    input += '?' if input[-1] != '?' else ''
 
-    # Remove last question-answer pairing from the context
-    #if (len(context_array) > max_context):
-        #context_array = context_array[2:]
-    #context_array.append(input)
-
-   # model_completion_prompt = create_question()
-
+    # Grab context that best matches the input w/ embedding library
     top_context = embedded_context.find_context(input)[0]
-
-    #chosen_sections = []
-    sects_len = 0
-    sects_indices = []
 
     document_section = DF.loc[DF['title'] == top_context[1][1]].values
 
-    #for _, section_index in top_context:
-    #    document_section = DF.loc[DF['title'] == section_index[1]].values
-    #    sects_len += document_section[0][3]
-    #    if sects_len > MAX_SEC_LEN:
-    #        break
+    context = document_section[0][5].replace("\n", " ")
+    context = context[0:1500] if len(context) > 1500 else context
 
-    #    chosen_sections.append(SEPARATOR + document_section[0][2].replace("\n", " "))
-    #    sects_indices.append(str(section_index))
-    #print(document_section[0][3])
+    # Construct the prompt to feed into the models, which is further modified at each file
     header = """Provide a single answer. Do not repeat the question.\n\n"""
-    model_completion_prompt = document_section[0][5].replace("\n", " ") + "\nQuestion: " + input + "\n"
-    #model_completion_prompt = "Question: " + input + "\n"
-    
-    while (1):
-        if (check_discrim(model_completion_prompt + " Related:")):
-            output = model_completion(header + model_completion_prompt)
+    model_completion_prompt = context + "\nQuestion: " + input + "\n"
+
+    # Loop allows multiple attempts at answering question in case the first try fails
+    # Variability of responses
+    i = 0
+    while (i < 1):
+        # Check with discriminator model if the context appropriately answers the question
+        if (check_discrim(model_completion_prompt + "Related:")):
+            # Produce output from completion model
+            output = model_completion(header + model_completion_prompt + "Answer:")
             if (output['choices'][0]["finish_reason"] == 'stop' and output['choices'][0]['text'].replace(" ", "") != ""):
-                break
-            return output['choices'][0]['text']
+                return output['choices'][0]['text'][1:] # Returns model output with the starting space removed
+            
+            i+=1
         else:
-            return "No context found according to discrim."
+            return SORRY_MESSAGE + '*'
+    
+    return SORRY_MESSAGE
 
 def model_completion(input):
     return openai.Completion.create(
         model=COMPLETION_MODEL,
-        prompt=input + "Answer:",
+        prompt=input,
         echo=False,
         max_tokens=200,
         stop=["Question", "\n\n"],
-        temperature = .7
+        temperature = 0.3 # Lower variablity -> more objective responses
     )
 
 def check_discrim(input):
@@ -66,29 +60,12 @@ def check_discrim(input):
         max_tokens=1,
         logprobs = 10
     )
+    # logprobs uses discrim model to determine what the most appropriate response to the question is
     logprobs = result['choices'][0]['logprobs']['top_logprobs'][0]
-    print(logprobs)
-    yes = logprobs[' yes'] if ' yes' in logprobs else -100
-    no = logprobs[' no'] if ' no' in logprobs else -100
-    print (f' {yes} {no}')
+    yes = logprobs[' yes'] if ' yes' in logprobs else -10
+    no = logprobs[' no'] if ' no' in logprobs else -10
+
     return (yes > no)
-
-def create_question(context_array):
-    messages = [{"role": "system", "content": "You are a system made to create a question based off of the prior conversation."}]
-
-    i = 0
-    while (i < len(context_array) - 1):
-        messages.append({"role": "user", "content": context_array[i]})
-        messages.append({"role": "assistant", "content": context_array[i+1]})
-        i += 2
-
-    messages.append({"role": "user", "content": context_array[i]}) # Newest message provided by the user
-    messages.append({"role": "user", "content": "Create a question based off the previous conversation we have had, or if there is only one previous question, turn it into a question if it is not already one."})
-
-    return openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=messages
-    )['choices'][0]['message']['content']
 
 # Testing without util of front-end
 if __name__ == "__main__":

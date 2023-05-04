@@ -16,6 +16,7 @@ def scrape(url):
         if (new_url and urls.count(new_url) == 0 and new_url != '' and urls[0] in new_url):
             urls.append(new_url)
 
+    # regex to turn urls into files
     file_name = re.sub('https://', '', url)
     file_name = re.sub('/', '_', file_name)
     file_name = re.sub('\.', '-', file_name)
