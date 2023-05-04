@@ -1,0 +1,1 @@
+web: gunicorn UTD_Admissions_Chatbot.wsgi --log-file -
