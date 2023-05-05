@@ -24,7 +24,6 @@ function generateMessageId() {
 }
 
 function messageView(isAi, value, uid) {
-
   // if isAi is true, add the "ai" class to the wrapper div
   const wrapperClass = isAi ? "wrapper ai" : "wrapper";
 
@@ -75,7 +74,8 @@ const handleSubmit = async (e) => {
 
   const messageDiv = document.getElementById(uid);
 
-  // messageLoader(messageDiv);
+  // loading indicator
+  messageLoader(messageDiv);
 
   // make a POST request to the server w/ user's message as the payload
   const response = await fetch("/", {
@@ -87,6 +87,9 @@ const handleSubmit = async (e) => {
       prompt: data.get("prompt"),
     }),
   });
+
+  // clear message loader interval
+  clearInterval(loadInterval);
 
   // Get the response from the server as JSON
   const responseData = await response.json();
