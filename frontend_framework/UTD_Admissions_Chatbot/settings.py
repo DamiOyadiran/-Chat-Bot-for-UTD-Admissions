@@ -120,15 +120,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-# STATIC_ROOT = "app-root/repo/wsgi/static"
 STATIC_ROOT = BASE_DIR / 'productionfiles'
 WHITENOISE_ROOT = os.path.join(BASE_DIR, 'chatbot', 'static')
 
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    ('assets', 'app-root/repo/wsgi/openshift/static'),
-
+    ('assets', os.path.join(BASE_DIR, 'chatbot', 'static')),
+    
     )
 
 # Default primary key field type
