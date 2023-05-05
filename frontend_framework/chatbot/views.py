@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 import openai
 from django.views import View
-from prompt_completion import format
+from backend.prompt_completion import format
 import json
 from django.views.decorators.csrf import csrf_exempt
 

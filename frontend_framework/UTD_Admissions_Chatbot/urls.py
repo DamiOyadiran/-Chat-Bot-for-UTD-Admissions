@@ -20,12 +20,12 @@ from django.conf.urls.static import static
 from chatbot import views
 
 from django.views.static import serve
-from django.conf.urls import url
+from django.urls import re_path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.chatbot, name='chatbot'),
 
-    url(r'^media/(?P<path>.*)$', serve,{'document_root':       settings.MEDIA_ROOT}), 
-    url(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
+    re_path(r'^media/(?P<path>.*)$', serve,{'document_root':       settings.MEDIA_ROOT}), 
+    re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
 ]
