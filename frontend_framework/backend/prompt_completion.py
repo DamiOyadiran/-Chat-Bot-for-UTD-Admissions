@@ -1,4 +1,4 @@
-import openai, embedded_context, os, pandas as pd
+import openai, backend.embedded_context as embedded_context, os, pandas as pd
 
 MAX_SEC_LEN = 1000
 SEPARATOR = "\n* "
@@ -49,7 +49,7 @@ def model_completion(input):
         echo=False,
         max_tokens=200,
         stop=["Question", "\n\n"],
-        temperature = 0.3 # Lower variablity -> more objective responses
+        temperature = 0.7 # Lower variablity -> more objective responses
     )
 
 def check_discrim(input):

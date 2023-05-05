@@ -7,6 +7,7 @@ import sys
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'UTD_Admissions_Chatbot.settings')
+    sys.path.insert(0, os.path.abspath("../model_training"))
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
