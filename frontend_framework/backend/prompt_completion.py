@@ -18,27 +18,21 @@ def format(input):
 
     document_section = DF.loc[DF['title'] == top_context[1][1]].values
 
-    context = document_section[0][5].replace("\n", " ")
+    context = document_section[0][5]
     context = context[0:1500] if len(context) > 1500 else context
 
     # Construct the prompt to feed into the models, which is further modified at each file
-    header = """Provide a single answer. Do not repeat the question.\n\n"""
+    header = """Provide a single answer to the question utilizing the provided context to the best of your ability.\n\n"""
     model_completion_prompt = context + "\nQuestion: " + input + "\n"
 
     # Loop allows multiple attempts at answering question in case the first try fails
     # Variability of responses
-    i = 0
-    while (i < 1):
-        # Check with discriminator model if the context appropriately answers the question
+    for i in range(5):
         if (check_discrim(model_completion_prompt + "Related:")):
             # Produce output from completion model
             output = model_completion(header + model_completion_prompt + "Answer:")
             if (output['choices'][0]["finish_reason"] == 'stop' and output['choices'][0]['text'].replace(" ", "") != ""):
                 return output['choices'][0]['text'][1:] # Returns model output with the starting space removed
-            
-            i+=1
-        else:
-            return SORRY_MESSAGE + '*'
     
     return SORRY_MESSAGE
 
@@ -49,7 +43,7 @@ def model_completion(input):
         echo=False,
         max_tokens=200,
         stop=["Question", "\n\n"],
-        temperature = 0.7 # Lower variablity -> more objective responses
+        temperature = .5 # Lower variablity -> more objective responses
     )
 
 def check_discrim(input):
@@ -58,12 +52,14 @@ def check_discrim(input):
         prompt=input,
         echo=False,
         max_tokens=1,
-        logprobs = 10
+        logprobs = 5,
+        best_of = 3,
+        temperature = .5
     )
     # logprobs uses discrim model to determine what the most appropriate response to the question is
     logprobs = result['choices'][0]['logprobs']['top_logprobs'][0]
-    yes = logprobs[' yes'] if ' yes' in logprobs else -10
-    no = logprobs[' no'] if ' no' in logprobs else -10
+    yes = logprobs[' yes'] if ' yes' in logprobs else -50
+    no = logprobs[' no'] if ' no' in logprobs else -50
 
     return (yes > no)
 
